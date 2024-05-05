@@ -12,7 +12,24 @@ def main():
     """
     Call out the visualization functions.
     """
-    global_vs_local_bar_chart()
+    # global_vs_local_bar_chart()
+    class_dist_chart("binary")
+    class_dist_chart("multi")
+
+
+def class_dist_chart(label):
+    df = pd.read_csv("datasets/preprocessed/maintenance_data.csv")
+    if label == "binary":
+        df["target"].value_counts().plot.bar(rot=0)
+        plt.ylabel("Count")
+        plt.xlabel("Binary Label")
+    elif label == "multi":
+        df["failure.type"].value_counts().plot.bar(rot=0)
+        plt.ylabel("Count")
+        plt.xlabel("Multi-class Label")
+    else:
+        raise Exception("Invalid label type.")
+    plt.show()
 
 
 def global_vs_local_bar_chart():

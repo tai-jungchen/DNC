@@ -15,11 +15,11 @@ def main():
 	"""
 	df = pd.read_csv("datasets/preprocessed/maintenance_data.csv")
 
-	pca_helper(df, 'multi')
-	# pca_helper(df, 'binary')
+	pca_helper(df[df.columns.tolist()[:-4]], df['failure.type'])
+	pca_helper(df[df.columns.tolist()[:-4]], df['target'])
 
 
-def pca_helper(data, class_type):
+def pca_helper(X, y):
 	"""
 	Conduct PCA on the data and plot out the data after dimension reduction
 	:param data: original data
@@ -27,13 +27,10 @@ def pca_helper(data, class_type):
 	:param class_type: classification type (binary or multiclass)
 	:type class_type: String
 	"""
-	if class_type == 'multi':
-		# Separate data and labels
-		X = data[data.columns.tolist()[:-2]]
-		y = data['failure.type']
-
+	# multi-class
+	if len(y.unique()) > 2:
 		# Instantiate PCA object
-		pca = PCA(n_components=2)
+		pca = PCA()
 
 		# Fit and transform the data
 		transformed_data = pca.fit_transform(X)
@@ -52,13 +49,9 @@ def pca_helper(data, class_type):
 		plt.ylabel('Principal Component 2')
 		plt.legend()
 		plt.show()
-	elif class_type == 'binary':
-		# Separate data and labels
-		X = data[data.columns.tolist()[:-2]]
-		y = data['target']
-
+	elif len(y.unique()) == 2:
 		# Instantiate PCA object
-		pca = PCA(n_components=2)
+		pca = PCA()
 
 		# Fit and transform the data
 		transformed_data = pca.fit_transform(X)
@@ -74,7 +67,7 @@ def pca_helper(data, class_type):
 		plt.legend()
 		plt.show()
 	else:
-		print("Error")
+		raise Exception("Invalid number of labels")
 
 
 if __name__ == "__main__":
